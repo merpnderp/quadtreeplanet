@@ -17,10 +17,10 @@ public class Node {
 	private Node bottomRightChild;
 	
 	// Neighbors
-	private Node leftNeighbor;	
-	private Node rightNeighbor;	
-	private Node topNeighbor;
-	private Node bottomBeighbor;
+	public Node leftNeighbor;	
+	public Node rightNeighbor;	
+	public Node topNeighbor;
+	public Node bottomBeighbor;
 	
 	public Node(Node _parent, int _level, QuadTree _tree, Vector3 _position){
 		parent = _parent;

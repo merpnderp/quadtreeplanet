@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Timers;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 public class QuadTreeSphere : MonoBehaviour
@@ -10,16 +12,16 @@ public class QuadTreeSphere : MonoBehaviour
 	public int patchSize = 32;
 	public int maxLevel;
 	
+	public GameObject PlanetMeshPrefab;
+	private List<GameObject> PlanetMeshPrefabs = new List<GameObject>();
+	
 	private List<QuadTree> quadTrees = new List<QuadTree> ();
 	
 	private MeshBuilder meshBuilder = new MeshBuilder();
 	
-	private MeshFilter filter;
-	
 	// Use this for initialization
 	void Start ()
 	{
-		filter = GetComponent<MeshFilter>();
 		init();
 	}
 
@@ -27,7 +29,7 @@ public class QuadTreeSphere : MonoBehaviour
 		maxLevel = (int)Mathf.Log (radius * 2f);
 		maxLevel -= (int)Mathf.Log (Mathf.Pow (patchSize, 2));
 		maxLevel = maxLevel < 0 ? 0 : maxLevel;
-	
+		UnityEngine.Debug.Log (maxLevel);
 		Vector3 farCorner = (Vector3.right + Vector3.up + Vector3.forward) * radius;
 	//	Vector3 nearCorner =(Vector3.left + Vector3.down + Vector3.back) * radius;
 	    Vector3 nearCorner = -farCorner;
@@ -40,17 +42,69 @@ public class QuadTreeSphere : MonoBehaviour
 		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.left, Vector3.back, meshBuilder));// Top
 		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.down, Vector3.left, meshBuilder));// Back
 		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.back, Vector3.down, meshBuilder));// Right
+	
+		AssignNeighbors();
+		
 		foreach(QuadTree tree in quadTrees){
 			tree.Draw();
 		}
-		filter.sharedMesh = meshBuilder.CreateMesh();
+		
+		Mesh mesh = meshBuilder.CreateMesh();
+		Vector3[] temp = mesh.vertices;
+		for(int i = 0; i < temp.Length; i++){
+			temp[i] = Vector3.Normalize(temp[i]) * radius;
+		}
+		mesh.vertices = temp;
+		mesh.RecalculateNormals();
+		
+//		filter.mesh.Clear();
+//		filter.mesh.vertices = mesh.vertices;
+//		filter.mesh.uv = mesh.uv;
+//		filter.mesh.normals = mesh.normals;
+//		filter.mesh.triangles = mesh.triangles;
+		LoadMeshes();
 	}
 	
 	// Update is called once per frame
-	void Update ()
-	{
-		//foreach(QuadTree tree in quadTrees){
-		//	tree.Draw();
-		//}
+	void Update (){
+	}
+	
+	void LoadMeshes(){
+		int vertexCount = meshBuilder.Vertices.Count;
+		int index = 0;
+		for(int i = 0; i < vertexCount; i+= 65536){
+			if(PlanetMeshPrefabs.Count < index + 1){
+				PlanetMeshPrefabs.Add(Instantiate(PlanetMeshPrefab) as GameObject);
+			}
+			int offset = i * 65536;
+			int size = (i + 1) * 65536;
+			size = size > vertexCount ? size : vertexCount; 
+			
+			Mesh temp = meshBuilder.CreateMesh(offset, size);	
+			MeshFilter filter = (MeshFilter)PlanetMeshPrefabs[i].GetComponent("MeshFilter");
+			
+			filter.mesh.Clear();
+			filter.mesh.vertices = temp.vertices;
+			filter.mesh.uv = temp.uv;
+			filter.mesh.normals = temp.normals;
+			filter.mesh.triangles = temp.triangles;	
+			index++;	
+		}
+	}
+	
+	private void AssignNeighbors(){
+		Node bottom = quadTrees[0].GetRootNode();
+		Node front = quadTrees[1].GetRootNode();
+		Node left = quadTrees[2].GetRootNode();
+		Node top = quadTrees[3].GetRootNode();
+		Node back = quadTrees[4].GetRootNode();
+		Node right = quadTrees[5].GetRootNode();
+		
+		quadTrees[0].AssignNeighbors(left, back, right, front);	
+		quadTrees[1].AssignNeighbors(left, top, right, bottom);	
+		quadTrees[2].AssignNeighbors(bottom, back, top, front);	
+		quadTrees[3].AssignNeighbors(right, front , left, back);	
+		quadTrees[4].AssignNeighbors(top, left , bottom, right);	
+		quadTrees[5].AssignNeighbors(back, bottom , front, top);	
 	}
 }
