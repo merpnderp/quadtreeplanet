@@ -27,6 +27,7 @@ public class MeshBuilder
 
 	//indices for the triangles:
 	private List<int> m_Indices = new List<int>();
+	public List<int> Triangles { get { return m_Indices; } }
 	
 	/// <summary>
 	/// Adds a triangle to the mesh.
@@ -68,26 +69,4 @@ public class MeshBuilder
 		return mesh;
 	}
 	
-		public Mesh CreateMesh(int offset, int size)
-	{
-
-		Mesh mesh = new Mesh();
-		
-		//add our vertex and triangle values to the new mesh:
-		mesh.vertices = m_Vertices.GetRange(offset, size).ToArray();
-		mesh.triangles = m_Indices.GetRange(offset * 3, size * 3).ToArray();
-
-		//Normals are optional. Only use them if we have the correct amount:
-		if (m_Normals.Count == m_Vertices.Count)
-			mesh.normals = m_Normals.GetRange(offset,size).ToArray();
-
-		//UVs are optional. Only use them if we have the correct amount:
-		if (m_UVs.Count == m_Vertices.Count)
-			mesh.uv = m_UVs.GetRange(offset, size).ToArray();
-
-		//have the mesh recalculate its bounding box (required for proper rendering):
-		mesh.RecalculateBounds();
-
-		return mesh;
-	}
 }

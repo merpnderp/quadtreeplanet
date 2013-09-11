@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Timers;
-using System.Diagnostics;
 using System.Collections.Generic;
 
 public class QuadTreeSphere : MonoBehaviour
@@ -48,7 +47,7 @@ public class QuadTreeSphere : MonoBehaviour
 		foreach(QuadTree tree in quadTrees){
 			tree.Draw();
 		}
-		
+/*		
 		Mesh mesh = meshBuilder.CreateMesh();
 		Vector3[] temp = mesh.vertices;
 		for(int i = 0; i < temp.Length; i++){
@@ -56,7 +55,7 @@ public class QuadTreeSphere : MonoBehaviour
 		}
 		mesh.vertices = temp;
 		mesh.RecalculateNormals();
-		
+	*/	
 //		filter.mesh.Clear();
 //		filter.mesh.vertices = mesh.vertices;
 //		filter.mesh.uv = mesh.uv;
@@ -70,25 +69,23 @@ public class QuadTreeSphere : MonoBehaviour
 	}
 	
 	void LoadMeshes(){
-		int vertexCount = meshBuilder.Vertices.Count;
-		int index = 0;
-		for(int i = 0; i < vertexCount; i+= 65536){
-			if(PlanetMeshPrefabs.Count < index + 1){
+		MeshSplitter meshSplitter = new MeshSplitter(meshBuilder.Triangles.ToArray(), meshBuilder.Vertices.ToArray(),
+			meshBuilder.UVs.ToArray(), 65534 );
+		Mesh[] meshes = meshSplitter.SplitMesh(); 
+		for(int i = 0; i < meshes.Length; i++){
+			if(PlanetMeshPrefabs.Count < i + 1){
 				PlanetMeshPrefabs.Add(Instantiate(PlanetMeshPrefab) as GameObject);
+				PlanetMeshPrefabs[i].transform.parent = (Transform)GetComponent("Transform");
+				PlanetMeshPrefabs[i].transform.localRotation = Quaternion.identity;
+//				PlanetMeshPrefabs[i].transform.localPosition = new Vector3();
 			}
-			int offset = i * 65536;
-			int size = (i + 1) * 65536;
-			size = size > vertexCount ? size : vertexCount; 
-			
-			Mesh temp = meshBuilder.CreateMesh(offset, size);	
 			MeshFilter filter = (MeshFilter)PlanetMeshPrefabs[i].GetComponent("MeshFilter");
 			
-			filter.mesh.Clear();
-			filter.mesh.vertices = temp.vertices;
-			filter.mesh.uv = temp.uv;
-			filter.mesh.normals = temp.normals;
-			filter.mesh.triangles = temp.triangles;	
-			index++;	
+			filter.mesh.vertices = meshes[i].vertices;
+			filter.mesh.uv = meshes[i].uv;
+			filter.mesh.normals = meshes[i].normals;
+			filter.mesh.triangles = meshes[i].triangles;	
+			filter.mesh.RecalculateNormals();
 		}
 	}
 	

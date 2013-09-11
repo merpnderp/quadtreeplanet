@@ -29,7 +29,6 @@ public class QuadTree
 	public void Draw ()
 	{
 		rootNode.Draw ();
-		meshBuilder.CreateMesh ();	
 	}
 	
 	public void AssignNeighbors (Node left, Node top, Node right, Node bottom)

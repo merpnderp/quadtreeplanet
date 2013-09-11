@@ -36,13 +36,15 @@ public class Node {
 		Vector3 heightStep = tree.heightDir * step;	
 		Vector3 widthStep = tree.widthDir * step;	
 		
-		for(int x = 0; x < tree.patchSize; x++){
+		for(int x = 0; x <= tree.patchSize; x++){
 		
-			for(int y = 0; y < tree.patchSize; y++){
+			for(int y = 0; y <= tree.patchSize; y++){
 				
 				Vector3 offset = startPosition + (tree.widthDir * step * x) + (tree.heightDir * step * y);
-				
-				ProcBase.BuildQuad(tree.meshBuilder, offset, widthStep, heightStep);
+				offset = Vector3.Normalize(offset) * tree.radius;
+				bool buildTriangles = x > 0 && y > 0;
+				Vector2 uv = new Vector2();
+				ProcBase.BuildQuadForGrid(tree.meshBuilder, offset, uv, buildTriangles, tree.patchSize+1);	
 				
 			}
 		}

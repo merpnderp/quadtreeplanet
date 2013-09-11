@@ -51,19 +51,19 @@ public class ProcBase
 	{
 		Vector3 normal = Vector3.Cross (heightDir, widthDir).normalized;
 
-		meshBuilder.Vertices.Add (offset);
+		meshBuilder.Vertices.Add (offset);//near
 		meshBuilder.UVs.Add (new Vector2 (0.0f, 0.0f));
 		meshBuilder.Normals.Add (normal);
 
-		meshBuilder.Vertices.Add (offset + heightDir);
+		meshBuilder.Vertices.Add (offset + heightDir);//up
 		meshBuilder.UVs.Add (new Vector2 (0.0f, 1.0f));
 		meshBuilder.Normals.Add (normal);
 
-		meshBuilder.Vertices.Add (offset + heightDir + widthDir);
+		meshBuilder.Vertices.Add (offset + heightDir + widthDir);//far
 		meshBuilder.UVs.Add (new Vector2 (1.0f, 1.0f));
 		meshBuilder.Normals.Add (normal);
 
-		meshBuilder.Vertices.Add (offset + widthDir);
+		meshBuilder.Vertices.Add (offset + widthDir);//right
 		meshBuilder.UVs.Add (new Vector2 (1.0f, 0.0f));
 		meshBuilder.Normals.Add (normal);
 
@@ -86,7 +86,7 @@ public class ProcBase
 	/// <param name="uv">The UV coordinates of the quad's corner vertex.</param>
 	/// <param name="buildTriangles">Should triangles be built for this quad? This value should be false if this is the first quad in any row or collumn.</param>
 	/// <param name="vertsPerRow">The number of vertices per row in this grid.</param>
-	protected void BuildQuadForGrid (MeshBuilder meshBuilder, Vector3 position, Vector2 uv, bool buildTriangles, int vertsPerRow)
+	public static void BuildQuadForGrid (MeshBuilder meshBuilder, Vector3 position, Vector2 uv, bool buildTriangles, int vertsPerRow)
 	{
 		meshBuilder.Vertices.Add (position);
 		meshBuilder.UVs.Add (uv);
@@ -113,7 +113,7 @@ public class ProcBase
 	/// <param name="buildTriangles">Should triangles be built for this quad? This value should be false if this is the first quad in any row or collumn.</param>
 	/// <param name="vertsPerRow">The number of vertices per row in this grid.</param>
 	/// <param name="normal">The normal of the quad's corner vertex.</param>
-	protected void BuildQuadForGrid (MeshBuilder meshBuilder, Vector3 position, Vector2 uv, bool buildTriangles, int vertsPerRow, Vector3 normal)
+	public static void BuildQuadForGrid (MeshBuilder meshBuilder, Vector3 position, Vector2 uv, bool buildTriangles, int vertsPerRow, Vector3 normal)
 	{
 		meshBuilder.Vertices.Add (position);
 		meshBuilder.UVs.Add (uv);
