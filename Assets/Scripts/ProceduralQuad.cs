@@ -4,7 +4,7 @@ using System.Collections;
 /// <summary>
 /// Class for procedural meshes. 
 /// </summary>
-public class ProcBase
+public class ProceduralQuad
 {
 	#region "BuildQuad() methods"
 
@@ -86,7 +86,7 @@ public class ProcBase
 	/// <param name="uv">The UV coordinates of the quad's corner vertex.</param>
 	/// <param name="buildTriangles">Should triangles be built for this quad? This value should be false if this is the first quad in any row or collumn.</param>
 	/// <param name="vertsPerRow">The number of vertices per row in this grid.</param>
-	public static void BuildQuadForGrid (MeshBuilder meshBuilder, Vector3 position, Vector2 uv, bool buildTriangles, int vertsPerRow)
+	public static void BuildQuadForGrid (MeshBuilder meshBuilder, Vector3 position, Vector2 uv, bool buildTriangles, int vertsPerRow, bool SwapOrder)
 	{
 		meshBuilder.Vertices.Add (position);
 		meshBuilder.UVs.Add (uv);
@@ -98,8 +98,14 @@ public class ProcBase
 			int index2 = baseIndex - vertsPerRow;
 			int index3 = baseIndex - vertsPerRow - 1;
 
-			meshBuilder.AddTriangle (index0, index2, index1);
-			meshBuilder.AddTriangle (index2, index3, index1);
+			if(SwapOrder){
+				meshBuilder.AddTriangle(index0, index3, index1);
+				meshBuilder.AddTriangle(index0, index2, index3);
+			}else{
+				meshBuilder.AddTriangle (index0, index2, index1);
+				meshBuilder.AddTriangle (index2, index3, index1);
+				
+			}
 		}
 	}
 
