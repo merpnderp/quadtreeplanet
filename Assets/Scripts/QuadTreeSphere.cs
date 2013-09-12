@@ -47,20 +47,6 @@ public class QuadTreeSphere : MonoBehaviour
 		foreach(QuadTree tree in quadTrees){
 			tree.Draw();
 		}
-/*		
-		Mesh mesh = meshBuilder.CreateMesh();
-		Vector3[] temp = mesh.vertices;
-		for(int i = 0; i < temp.Length; i++){
-			temp[i] = Vector3.Normalize(temp[i]) * radius;
-		}
-		mesh.vertices = temp;
-		mesh.RecalculateNormals();
-	*/	
-//		filter.mesh.Clear();
-//		filter.mesh.vertices = mesh.vertices;
-//		filter.mesh.uv = mesh.uv;
-//		filter.mesh.normals = mesh.normals;
-//		filter.mesh.triangles = mesh.triangles;
 		LoadMeshes();
 	}
 	
@@ -75,8 +61,8 @@ public class QuadTreeSphere : MonoBehaviour
 		for(int i = 0; i < meshes.Length; i++){
 			if(PlanetMeshPrefabs.Count < i + 1){
 				PlanetMeshPrefabs.Add(Instantiate(PlanetMeshPrefab) as GameObject);
-				PlanetMeshPrefabs[i].transform.parent = (Transform)GetComponent("Transform");
-				PlanetMeshPrefabs[i].transform.localRotation = Quaternion.identity;
+//				PlanetMeshPrefabs[i].transform.parent = (Transform)GetComponent("Transform");
+//				PlanetMeshPrefabs[i].transform.localRotation = Quaternion.identity;
 //				PlanetMeshPrefabs[i].transform.localPosition = new Vector3();
 			}
 			MeshFilter filter = (MeshFilter)PlanetMeshPrefabs[i].GetComponent("MeshFilter");

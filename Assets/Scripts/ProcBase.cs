@@ -90,7 +90,6 @@ public class ProcBase
 	{
 		meshBuilder.Vertices.Add (position);
 		meshBuilder.UVs.Add (uv);
-
 		if (buildTriangles) {
 			int baseIndex = meshBuilder.Vertices.Count - 1;
 
