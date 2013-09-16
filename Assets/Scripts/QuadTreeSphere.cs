@@ -16,7 +16,7 @@ public class QuadTreeSphere : MonoBehaviour
 	
 	private List<QuadTree> quadTrees = new List<QuadTree> ();
 	
-	private MeshBuilder meshBuilder = new MeshBuilder();
+	public MeshProvider meshProvider;
 	
 	// Use this for initialization
 	void Start ()
@@ -25,6 +25,8 @@ public class QuadTreeSphere : MonoBehaviour
 	}
 
 	public void init(){
+		
+		meshProvider = new MeshProvider(patchSize);
 		maxLevel = (int)Mathf.Log (radius * 2f);
 		maxLevel -= (int)Mathf.Log (Mathf.Pow (patchSize, 2));
 		maxLevel = maxLevel < 0 ? 0 : maxLevel;
@@ -34,27 +36,34 @@ public class QuadTreeSphere : MonoBehaviour
 	    Vector3 nearCorner = -farCorner;
 		
 		//near corner quads	
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.forward, Vector3.right, meshBuilder));// Bottom
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.right, Vector3.up, meshBuilder));// Front
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.up, Vector3.forward, meshBuilder));// Left
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.forward, Vector3.right, this));// Bottom
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.right, Vector3.up, this));// Front
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.up, Vector3.forward, this));// Left
 		//far corner quads	
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.left, Vector3.back, meshBuilder));// Top
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.down, Vector3.left, meshBuilder));// Back
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.back, Vector3.down, meshBuilder));// Right
-	
-		AssignNeighbors();
-		
-		foreach(QuadTree tree in quadTrees){
-			tree.Draw();
-		}
-		LoadMeshes();
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.left, Vector3.back, this));// Top
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.down, Vector3.left, this));// Back
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.back, Vector3.down, this));// Right
+		//AssignNeighbors();
 	}
 	
 	// Update is called once per frame
 	void Update (){
+//		quadTrees[1].Draw();
+		foreach(QuadTree tree in quadTrees){
+			tree.Draw();
+		}
+		
 	}
+
+	public GameObject GetPrefab(){
+		GameObject gm = Instantiate(PlanetMeshPrefab) as GameObject;
+		gm.transform.parent = (Transform)GetComponent("Transform");
+		gm.transform.localRotation = Quaternion.identity;
+		gm.transform.localPosition = new Vector3();
+		return gm;
+	}	
 	
-	void LoadMeshes(){
+/*	void LoadMeshes(){
 		MeshSplitter meshSplitter = new MeshSplitter(meshBuilder.Triangles.ToArray(), meshBuilder.Vertices.ToArray(),
 			meshBuilder.UVs.ToArray(), 65534 );
 		Mesh[] meshes = meshSplitter.SplitMesh(); 
@@ -73,7 +82,7 @@ public class QuadTreeSphere : MonoBehaviour
 			filter.mesh.triangles = meshes[i].triangles;	
 			filter.mesh.RecalculateNormals();
 		}
-	}
+	}*/
 	
 	private void AssignNeighbors(){
 		Node bottom = quadTrees[0].GetRootNode();

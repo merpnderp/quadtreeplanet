@@ -90,6 +90,7 @@ public class ProceduralQuad
 	{
 		meshBuilder.Vertices.Add (position);
 		meshBuilder.UVs.Add (uv);
+	//	meshBuilder.Normals.Add(normal);
 		if (buildTriangles) {
 			int baseIndex = meshBuilder.Vertices.Count - 1;
 
@@ -98,13 +99,12 @@ public class ProceduralQuad
 			int index2 = baseIndex - vertsPerRow;
 			int index3 = baseIndex - vertsPerRow - 1;
 
-			if(SwapOrder){
-				meshBuilder.AddTriangle(index0, index3, index1);
-				meshBuilder.AddTriangle(index0, index2, index3);
-			}else{
-				meshBuilder.AddTriangle (index0, index2, index1);
-				meshBuilder.AddTriangle (index2, index3, index1);
-				
+			if(SwapOrder){//First quad
+				meshBuilder.AddTriangle(index0, index1, index3);//left
+				meshBuilder.AddTriangle(index0, index3, index2);//right
+			}else{//Second quad
+				meshBuilder.AddTriangle (index2, index1, index3);//left
+				meshBuilder.AddTriangle (index0, index1, index2);//right
 			}
 		}
 	}

@@ -10,61 +10,63 @@ using System.Collections.Generic;
 public sealed class MeshProvider
 {
 	
-	private MeshBuilder[] _meshBuilders = new MeshBuilder[9];
+	private Mesh[] _meshes = new Mesh[9];
 	private int _patchSize;
 	private Vector3 _heightDir;
 	private Vector3 _widthDir;
 
-	public MeshProvider (int patchSize, Vector3 heightDir, Vector3 widthDir)
+	public MeshProvider (int patchSize)
 	{
 		_patchSize = patchSize;
-		_heightDir = heightDir;
-		_widthDir = heightDir;
+		_widthDir = Vector3.right;
+		_heightDir = Vector3.up;
 		
 		CreateMeshes ();
-			
-		for (int x = 0; x <= patchSize; x++) {
-				
-			for (int y = 0; y <= patchSize; y++) {
-					
-			}
-		}
 	}
 
 	private void CreateMeshes ()
 	{
-
-		for (int i = 0; i < 9; i++) {
-			_meshBuilders[i] = new MeshBuilder();
-			CreateMesh (i);
-		}
+		MeshBuilder meshBuilder = new MeshBuilder();
+		CreateMesh (meshBuilder);
+		_meshes[0] = meshBuilder.CreateMesh();
 		
+		for (int i = 1; i < 9; i++) {
+			_meshes[i] = new Mesh();
+			_meshes[i].vertices = _meshes[0].vertices;
+			_meshes[i].triangles = _meshes[0].triangles;
+			_meshes[i].uv = _meshes[0].uv;
+			_meshes[i].vertices = _meshes[0].vertices;
+			_meshes[i].normals = _meshes[0].normals;
+			_meshes[i].bounds = _meshes[0].bounds;
+		}
 	}
 	
-	private void CreateMesh (int i)
+	private MeshBuilder CreateMesh (MeshBuilder meshBuilder)
 	{
-		float step = 1f / _patchSize;
+		float step = 1f / (_patchSize + 1);
 		
-		for (int x = 0; x <= _patchSize; x++) {
+		for (int y = 0; y <= _patchSize; y++) {
 		
-			for (int y = 0; y <= _patchSize; y++) {
+			for (int x = 0; x <= _patchSize; x++) {
 				
 				Vector3 offset = (_widthDir * step * x) + (_heightDir * step * y);
-				
+//				Vector3 normal = Vector3.Cross(_widthDir, _heightDir);	
 				Vector2 uv = new Vector2 (x,y);
 				
 				bool buildTriangles = x > 0 && y > 0;
-				bool swapOrder = y % 2 == 0 ? false: true;	
-				ProceduralQuad.BuildQuadForGrid (_meshBuilders[i], offset, uv, buildTriangles, _patchSize + 1, swapOrder);	
 				
+				bool swapOrder = x % 2 == y % 2 ? true: false;
+				
+//				ProceduralQuad.BuildQuadForGrid (meshBuilder, offset, normal, uv, buildTriangles, _patchSize + 1, swapOrder);	
+				ProceduralQuad.BuildQuadForGrid (meshBuilder, offset, uv, buildTriangles, _patchSize + 1, swapOrder);	
 			}
 		}
+		return meshBuilder;
 		
 	}
 	
 	public Mesh GetStandardMesh ()
 	{
-		return _meshBuilders [0].CreateMesh ();
+		return _meshes[0];
 	}
-	
 }
