@@ -43,7 +43,7 @@ public sealed class MeshProvider
 	
 	private MeshBuilder CreateMesh (MeshBuilder meshBuilder)
 	{
-		float step = 1f / (_patchSize + 1);
+		float step = 1f / (_patchSize );
 		
 		for (int y = 0; y <= _patchSize; y++) {
 		

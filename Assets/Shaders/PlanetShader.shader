@@ -24,10 +24,10 @@
 			
 			v2f vert(appdata_base v){
 				v2f o;
-				float3 w = float3(0,1,0);
-				float3 h = float3(0,0,1);
-				v.vertex = float4((_Position.xyz + ( (_WidthDir.xyz * v.vertex.x + _HeightDir.xyz * v.vertex.y) * _Width)).xyz, 1);
-//				v.vertex = float4((_Position.xyz + ( (w * v.vertex.x + h * v.vertex.y) * _Width * 40)).xyz, 1);
+				//Square
+//				v.vertex = float4((_Position.xyz + ( (_WidthDir.xyz * v.vertex.x + _HeightDir.xyz * v.vertex.y) * _Width)).xyz, 1);
+				//Circle
+				v.vertex = float4(normalize(_Position.xyz + (_WidthDir.xyz * v.vertex.x + _HeightDir.xyz * v.vertex.y) * _Width) * _Width, 1);
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				return o;
 			}

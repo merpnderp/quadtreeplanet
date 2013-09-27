@@ -100,11 +100,11 @@ public class ProceduralQuad
 			int index3 = baseIndex - vertsPerRow - 1;
 
 			if(SwapOrder){//First quad
-				meshBuilder.AddTriangle(index0, index1, index3);//left
-				meshBuilder.AddTriangle(index0, index3, index2);//right
+				meshBuilder.AddTriangle(index0, index3, index1);//left
+				meshBuilder.AddTriangle(index0, index2, index3);//right
 			}else{//Second quad
-				meshBuilder.AddTriangle (index2, index1, index3);//left
-				meshBuilder.AddTriangle (index0, index1, index2);//right
+				meshBuilder.AddTriangle (index2, index3, index1);//left
+				meshBuilder.AddTriangle (index0, index2, index1);//right
 			}
 		}
 	}

@@ -40,10 +40,10 @@ public class Node {
 			if(! isDrawn){
 				GameObject prefab = _tree.sphere.GetPrefab();
 				MeshRenderer mr = (MeshRenderer)prefab.GetComponent("MeshRenderer");
-				mr.renderer.material.SetVector("HeightDir", _tree.heightDir);
-				mr.renderer.material.SetVector("WidthDir", _tree.widthDir);
-				mr.renderer.material.SetVector("Position", _position);
-				mr.renderer.material.SetFloat("Width", _width);
+				mr.renderer.material.SetVector("_HeightDir", _tree.heightDir);
+				mr.renderer.material.SetVector("_WidthDir", _tree.widthDir);
+				mr.renderer.material.SetVector("_Position", _position);
+				mr.renderer.material.SetFloat("_Width", _width);
 				
 				MeshFilter mf = (MeshFilter)prefab.GetComponent("MeshFilter");
 				mf.mesh = _tree.sphere.meshProvider.GetStandardMesh();

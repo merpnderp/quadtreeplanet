@@ -1,23 +1,24 @@
 ﻿<Properties GitUserInfo="UsingGIT">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Node.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Shaders/PlanetShader.shader">
     <Files>
       <File FileName="Assets/Scripts/QuadTree.cs" Line="1" Column="1" />
-      <File FileName="Assets/Shaders/PlanetShader.shader" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/QuadTreeSphere.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/MeshProvider.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ProceduralQuad.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Node.cs" Line="46" Column="15" />
+      <File FileName="Assets/Shaders/PlanetShader.shader" Line="30" Column="130" />
+      <File FileName="Assets/Scripts/QuadTreeSphere.cs" Line="39" Column="28" />
+      <File FileName="Assets/Scripts/MeshProvider.cs" Line="46" Column="33" />
+      <File FileName="Assets/Scripts/ProceduralQuad.cs" Line="107" Column="51" />
+      <File FileName="Assets/Scripts/Node.cs" Line="46" Column="36" />
+      <File FileName="../../Downloads/procedural_geometry_tutorial_complete_source/Plane/ProcHouse.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
-              <Node name="Scripts" expanded="True">
-                <Node name="Node.cs" selected="True" />
+              <Node name="Scripts" expanded="True" />
+              <Node name="Shaders" expanded="True">
+                <Node name="PlanetShader.shader" selected="True" />
               </Node>
-              <Node name="Shaders" expanded="True" />
             </Node>
           </Node>
         </State>

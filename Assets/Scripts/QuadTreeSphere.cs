@@ -31,9 +31,13 @@ public class QuadTreeSphere : MonoBehaviour
 		maxLevel -= (int)Mathf.Log (Mathf.Pow (patchSize, 2));
 		maxLevel = maxLevel < 0 ? 0 : maxLevel;
 		UnityEngine.Debug.Log (maxLevel);
-		Vector3 farCorner = (Vector3.right + Vector3.up + Vector3.forward) * radius;
-	//	Vector3 nearCorner =(Vector3.left + Vector3.down + Vector3.back) * radius;
-	    Vector3 nearCorner = -farCorner;
+		
+	
+		Vector3 nearCorner = (Vector3.right + Vector3.up + Vector3.forward) * radius;
+		Vector3 farCorner = Vector3.zero;		
+//		Vector3 pivot = nearCorner * .5f;
+	    farCorner -= nearCorner;
+//	    nearCorner -= pivot;
 		
 		//near corner quads	
 		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.forward, Vector3.right, this));// Bottom
