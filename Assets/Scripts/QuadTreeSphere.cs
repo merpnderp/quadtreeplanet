@@ -10,10 +10,13 @@ public class QuadTreeSphere : MonoBehaviour
 	public int radius;
 	public int patchSize = 32;
 	public int maxLevel;
+	public int splitDistance = 500;
+	
+	public GameObject camera;	
 	
 	public GameObject PlanetMeshPrefab;
-	private List<GameObject> PlanetMeshPrefabs = new List<GameObject>();
 	
+	private List<GameObject> PlanetMeshPrefabs = new List<GameObject>();
 	private List<QuadTree> quadTrees = new List<QuadTree> ();
 	
 	public MeshProvider meshProvider;
@@ -31,28 +34,27 @@ public class QuadTreeSphere : MonoBehaviour
 		maxLevel -= (int)Mathf.Log (Mathf.Pow (patchSize, 2));
 		maxLevel = maxLevel < 0 ? 0 : maxLevel;
 		UnityEngine.Debug.Log (maxLevel);
-		
 	
 		Vector3 nearCorner = (Vector3.right + Vector3.up + Vector3.forward) * radius;
-		Vector3 farCorner = Vector3.zero;		
-//		Vector3 pivot = nearCorner * .5f;
-	    farCorner -= nearCorner;
-//	    nearCorner -= pivot;
+	    Vector3 farCorner = -nearCorner;
 		
 		//near corner quads	
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.forward, Vector3.right, this));// Bottom
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.right, Vector3.up, this));// Front
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.up, Vector3.forward, this));// Left
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.forward, Vector3.right, this, "Bottom"));// Bottom
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.right, Vector3.up, this, "Front"));// Front
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.up, Vector3.forward, this, "Left"));// Left
+		
 		//far corner quads	
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.left, Vector3.back, this));// Top
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.down, Vector3.left, this));// Back
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.back, Vector3.down, this));// Right
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.left, Vector3.back, this, "Top"));// Top
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.down, Vector3.left, this, "Back"));// Back
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.back, Vector3.down, this, "Right"));// Right
 		//AssignNeighbors();
+		
 	}
 	
 	// Update is called once per frame
 	void Update (){
-//		quadTrees[1].Draw();
+		
+		
 		foreach(QuadTree tree in quadTrees){
 			tree.Draw();
 		}

@@ -1,65 +1,119 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Node {
+public class Node
+{
 
-	private int _level;
-	private float _width;
-	
-	private Node _parent;
-	private QuadTree _tree;
-	private Vector3 _position;
+	private int level;
+	private float width;
+	private float halfWidth;
+	private Node parent;
+	private QuadTree tree;
+	private Vector3 position;
 	
 	// Children	
-	private Node _topLeftChild;
-	private Node _topRightChild;
-	private Node _bottomLeftChild;
-	private Node _bottomRightChild;
+	private Node topLeftChild;
+	private Node topRightChild;
+	private Node bottomLeftChild;
+	private Node bottomRightChild;
 	
 	// Neighbors
-	public Node leftNeighbor;	
-	public Node rightNeighbor;	
+	public Node leftNeighbor;
+	public Node rightNeighbor;
 	public Node topNeighbor;
 	public Node bottomBeighbor;
-	
+	public float c = 1;
 	public bool isSplit = false;
 	public bool isDrawn = false;
-
-	private MeshFilter _meshFilter;	
+	private GameObject prefab;
 	
-	public Node(Node parent, int level, QuadTree tree, Vector3 position){
-		_parent = parent;
-		_level = level;
-		_tree = tree;
-		_position = position;
-		_width = (tree.radius * 2) / Mathf.Pow(2,level); 
+	public Node (Node _parent, int _level, QuadTree _tree, Vector3 _position)
+	{
+		parent = _parent;
+		//rootnode is level 0
+		level = _level;
+		tree = _tree;
+		position = _position;
+		width = (tree.radius * 2) / Mathf.Pow (2, level); 
+		halfWidth = width / 2;
 	}
 	
-	public void Draw(){
-		if(! isSplit){
-			if(! isDrawn){
-				GameObject prefab = _tree.sphere.GetPrefab();
-				MeshRenderer mr = (MeshRenderer)prefab.GetComponent("MeshRenderer");
-				mr.renderer.material.SetVector("_HeightDir", _tree.heightDir);
-				mr.renderer.material.SetVector("_WidthDir", _tree.widthDir);
-				mr.renderer.material.SetVector("_Position", _position);
-				mr.renderer.material.SetFloat("_Width", _width);
-				
-				MeshFilter mf = (MeshFilter)prefab.GetComponent("MeshFilter");
-				mf.mesh = _tree.sphere.meshProvider.GetStandardMesh();
-				mf.mesh.RecalculateBounds();	
-				
-				isDrawn = true;
+	public void Draw ()
+	{
+//		if (level == 0 || ShouldSplit ()) {
+		if (false){
+			if (isDrawn) {
+				GameObject.Destroy (prefab);
 			}
-		}else{
-			_topLeftChild.Draw();
-			_topLeftChild.Draw();
-			_bottomLeftChild.Draw();
-			_bottomRightChild.Draw();
+			if (! isSplit) {
+				Split ();
+			} else {
+				topLeftChild.Draw ();
+				topRightChild.Draw ();
+				bottomLeftChild.Draw ();
+				bottomRightChild.Draw ();
+			}
+		} else if (! isDrawn) {
+			prefab = tree.sphere.GetPrefab ();
+			MeshRenderer mr = (MeshRenderer)prefab.GetComponent ("MeshRenderer");
+			mr.renderer.material.SetVector ("HeightDir", tree.heightDir);
+			mr.renderer.material.SetVector ("WidthDir", tree.widthDir);
+			mr.renderer.material.SetVector ("Position", position);
+			mr.renderer.material.SetFloat ("Width", width);
+			mr.renderer.material.SetFloat ("c", c);	
+			MeshFilter mf = (MeshFilter)prefab.GetComponent ("MeshFilter");
+			mf.mesh = tree.sphere.meshProvider.GetStandardMesh ();
+			mf.mesh.RecalculateBounds ();	
+			
+			isDrawn = true;
 		}
 	}
+
+	private bool ShouldSplit ()
+	{
+		if (ContainsCamera ()) {
+			float sd = (tree.sphere.splitDistance / level) - tree.sphere.radius;
+			float td = Vector3.Distance (tree.sphere.camera.transform.localPosition, position + (tree.widthDir + tree.heightDir) * halfWidth);
+			if (level > 0 && td < sd) {
+//				return true;	
+				return false;	
+			}
+		}
+		return false;
+	}
 	
-	public void Split(){
+	private bool ContainsCamera ()
+	{
+		if(tree.containsCamera){
+			float heightProjectionLength = Vector3.Distance(Vector3.Project(tree.heightDir, tree.cameraPoint),position);
+			if(heightProjectionLength > 0){
+				float widthProjectionLength = Vector3.Distance(Vector3.Project(tree.widthDir, tree.cameraPoint),position);
+				if(widthProjectionLength > 0){
+					if(heightProjectionLength < width && widthProjectionLength < width){
+						Debug.Log (tree.name + " : " + level + " contained the camera");
+						return true;
+					}	
+				}
+			}
+		}
+		return false;
+	}
+	
+	public void Split ()
+	{
+		float halfWidth = width / 2;
+		topLeftChild = new Node (this, level + 1, tree, position - (tree.heightDir * halfWidth));
+		topLeftChild.c = 1;
 		
+		topRightChild = new Node (this, level + 1, tree, position - (tree.heightDir + tree.widthDir) * halfWidth);
+		topRightChild.c = 2;
+		
+		bottomLeftChild = new Node (this, level + 1, tree, position);
+		bottomLeftChild.c = 3;
+		
+		bottomRightChild = new Node (this, level + 1, tree, position - (tree.widthDir * halfWidth));
+		bottomRightChild.c = 4;
+		
+		isSplit = true;
 	}
 }
