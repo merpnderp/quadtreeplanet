@@ -30,17 +30,21 @@ public class QuadTree
 		heightDir = _heightDir;
 		sphere = _sphere;
 		rootNode = new Node (null, 0, this, startPosition);
-		plane = new Plane(Vector3.Cross(widthDir,heightDir), radius);
+//		plane = new Plane(Vector3.Cross(widthDir, heightDir), startPosition);
+		plane = new Plane(Vector3.Cross(heightDir, widthDir), startPosition);
+//		plane = new Plane(Vector3.Cross(heightDir, widthDir), radius);
+//		plane = new Plane(Vector3.Cross(widthDir, heightDir), radius);
 	}
 
 	public void Draw ()
 	{
-		Ray cameraRay = new Ray(Vector3.zero, sphere.camera.transform.position);
+		Matrix4x4 t = sphere.transform.worldToLocalMatrix;
+		Ray cameraRay = new Ray(Vector3.zero, t.MultiplyPoint(sphere.camera.transform.position));
 		float distance = 0;
 		containsCamera = plane.Raycast(cameraRay, out distance);
-		if(containsCamera){
+		if(containsCamera && distance >= 0){
 			cameraPoint = Vector3.Normalize(sphere.camera.transform.position) * distance;
-//			Debug.Log(name + " had an intersection at: " + cameraPoint.ToString());
+//			Debug.Log(name + " had an intersection at: " + cameraPoint.ToString() + " : " + distance);
 		}
 		rootNode.Draw ();
 	}

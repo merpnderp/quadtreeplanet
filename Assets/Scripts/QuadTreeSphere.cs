@@ -13,6 +13,7 @@ public class QuadTreeSphere : MonoBehaviour
 	public int splitDistance = 500;
 	
 	public GameObject camera;	
+	public Vector3 oldCameraPosition;
 	
 	public GameObject PlanetMeshPrefab;
 	
@@ -33,7 +34,6 @@ public class QuadTreeSphere : MonoBehaviour
 		maxLevel = (int)Mathf.Log (radius * 2f);
 		maxLevel -= (int)Mathf.Log (Mathf.Pow (patchSize, 2));
 		maxLevel = maxLevel < 0 ? 0 : maxLevel;
-		UnityEngine.Debug.Log (maxLevel);
 	
 		Vector3 nearCorner = (Vector3.right + Vector3.up + Vector3.forward) * radius;
 	    Vector3 farCorner = -nearCorner;
@@ -53,12 +53,12 @@ public class QuadTreeSphere : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update (){
-		
-		
-		foreach(QuadTree tree in quadTrees){
-			tree.Draw();
+		if(camera.transform.position != oldCameraPosition){
+			oldCameraPosition = camera.transform.position;
+			foreach(QuadTree tree in quadTrees){
+				tree.Draw();
+			}
 		}
-		
 	}
 
 	public GameObject GetPrefab(){

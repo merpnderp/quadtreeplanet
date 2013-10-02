@@ -1,9 +1,9 @@
 ﻿Shader "Custom/PlanetShader" {
 	Properties {
-		_Position ("Position", Vector) = (0,0,0,0)
-		_WidthDir ("WidthDir", Vector) = (1,0,0,0)
-		_HeightDir ("HeightDir", Vector) = (0,1,0,0)
-		_Width ("Width", Float) = 1
+		Position ("Position", Vector) = (0,0,0,0)
+		WidthDir ("WidthDir", Vector) = (1,0,0,0)
+		HeightDir ("HeightDir", Vector) = (0,1,0,0)
+		Width ("Width", Float) = 1
 		c ("debug", Float) = 1
 	}
 	SubShader {
@@ -15,10 +15,10 @@
 			#pragma fragment frag
 			#include "UnityCG.cginc"
 	
-			uniform float4 _Position;
-			uniform float4 _WidthDir;
-			uniform float4 _HeightDir;
-			uniform float _Width;
+			uniform float4 Position;
+			uniform float4 WidthDir;
+			uniform float4 HeightDir;
+			uniform float Width;
 			uniform float c;
 			
 			struct v2f{
@@ -30,10 +30,10 @@
 				v2f o;
 				
 				//Square
-				v.vertex = float4((_Position.xyz + ( (_WidthDir.xyz * v.vertex.x + _HeightDir.xyz * v.vertex.y) * _Width)).xyz, 1);
+				v.vertex = float4((Position.xyz + ( (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width)).xyz, 1);
 				
 				//Circle
-//				v.vertex = float4(normalize(_Position.xyz + (_WidthDir.xyz * v.vertex.x + _HeightDir.xyz * v.vertex.y) * _Width) * _Width, 1);
+//				v.vertex = float4(normalize(Position.xyz + (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width) * Width, 1);
 				
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				return o;

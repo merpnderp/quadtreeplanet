@@ -40,19 +40,18 @@ public class Node
 	
 	public void Draw ()
 	{
-//		if (level == 0 || ShouldSplit ()) {
-		if (false){
+		if (ShouldSplit ()) {
 			if (isDrawn) {
 				GameObject.Destroy (prefab);
 			}
 			if (! isSplit) {
 				Split ();
-			} else {
-				topLeftChild.Draw ();
-				topRightChild.Draw ();
-				bottomLeftChild.Draw ();
-				bottomRightChild.Draw ();
-			}
+			} 
+			topLeftChild.Draw ();
+			topRightChild.Draw ();
+			bottomLeftChild.Draw ();
+			bottomRightChild.Draw ();
+			
 		} else if (! isDrawn) {
 			prefab = tree.sphere.GetPrefab ();
 			MeshRenderer mr = (MeshRenderer)prefab.GetComponent ("MeshRenderer");
@@ -72,10 +71,10 @@ public class Node
 	private bool ShouldSplit ()
 	{
 		if (ContainsCamera ()) {
-			float sd = (tree.sphere.splitDistance / level) - tree.sphere.radius;
+			float sd = (tree.sphere.splitDistance / (level + 1)) - tree.sphere.radius;
 			float td = Vector3.Distance (tree.sphere.camera.transform.localPosition, position + (tree.widthDir + tree.heightDir) * halfWidth);
-			if (level > 0 && td < sd) {
-//				return true;	
+			if (td < sd) {
+				return true;	
 				return false;	
 			}
 		}
@@ -85,12 +84,12 @@ public class Node
 	private bool ContainsCamera ()
 	{
 		if(tree.containsCamera){
-			float heightProjectionLength = Vector3.Distance(Vector3.Project(tree.heightDir, tree.cameraPoint),position);
+			float heightProjectionLength = Vector3.Distance(Vector3.Project(tree.cameraPoint, tree.heightDir),position);
 			if(heightProjectionLength > 0){
-				float widthProjectionLength = Vector3.Distance(Vector3.Project(tree.widthDir, tree.cameraPoint),position);
+				float widthProjectionLength = Vector3.Distance(Vector3.Project(tree.cameraPoint, tree.widthDir),position);
 				if(widthProjectionLength > 0){
 					if(heightProjectionLength < width && widthProjectionLength < width){
-						Debug.Log (tree.name + " : " + level + " contained the camera");
+//						Debug.Log (tree.name + " : " + level + " contained the camera: " + width + " : " + heightProjectionLength + " : " + widthProjectionLength);
 						return true;
 					}	
 				}
