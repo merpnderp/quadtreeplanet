@@ -39,14 +39,14 @@ public class QuadTreeSphere : MonoBehaviour
 	    Vector3 farCorner = -nearCorner;
 		
 		//near corner quads	
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.forward, Vector3.right, this, "Bottom"));// Bottom
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.right, Vector3.up, this, "Front"));// Front
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.up, Vector3.forward, this, "Left"));// Left
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.back, Vector3.left, this, "Bottom"));// Bottom
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.left, Vector3.down, this, "Front"));// Front
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, nearCorner, Vector3.down, Vector3.back, this, "Left"));// Left
 		
 		//far corner quads	
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.left, Vector3.back, this, "Top"));// Top
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.down, Vector3.left, this, "Back"));// Back
-		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.back, Vector3.down, this, "Right"));// Right
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.right, Vector3.forward, this, "Top"));// Top
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.up, Vector3.right, this, "Back"));// Back
+		quadTrees.Add(new QuadTree (maxLevel, patchSize, radius, farCorner, Vector3.forward, Vector3.up, this, "Right"));// Right
 		//AssignNeighbors();
 		
 	}

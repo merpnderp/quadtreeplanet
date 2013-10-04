@@ -24,11 +24,14 @@
 			struct v2f{
 				float4 pos : SV_POSITION;
 				float2 uv : TEXCOORD0;
+				float m;
 			};			
 			
 			v2f vert(appdata_base v){
 				v2f o;
-				
+			
+				o.m = v.vertex.x * v.vertex.y + .15;
+					
 				//Square
 				v.vertex = float4((Position.xyz + ( (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width)).xyz, 1);
 				
@@ -36,16 +39,17 @@
 //				v.vertex = float4(normalize(Position.xyz + (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width) * Width, 1);
 				
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
+				
 				return o;
 			}
 	
 			half4 frag(v2f i) : COLOR{
 				if(c == 1f)
-					return half4(1,0,0,1);	
+					return half4(i.m,0,0,1);	
 				if(c == 2f)
-					return half4(0,1,0,1);	
+					return half4(0,i.m,0,1);	
 				if(c == 3f)
-					return half4(0,0,1,1);	
+					return half4(0,0,i.m,1);	
 				if(c == 4f)
 					return half4(0,0,0,1);	
 					

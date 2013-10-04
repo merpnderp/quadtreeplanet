@@ -18,8 +18,8 @@ public sealed class MeshProvider
 	public MeshProvider (int patchSize)
 	{
 		_patchSize = patchSize;
-		_widthDir = Vector3.down;
-		_heightDir = Vector3.left;
+		_widthDir = Vector3.up;
+		_heightDir = Vector3.right;
 		
 		CreateMeshes ();
 	}

@@ -17,6 +17,8 @@ public class QuadTree
 	private Vector3 startPosition;
 	private Node rootNode;
 	public string name;
+
+	public Matrix4x4 localMatrix;
 	
 	public QuadTree (int _maxLevel, int _patchSize, int _radius, Vector3 _startPosition, 
 		Vector3 _widthDir, Vector3 _heightDir, QuadTreeSphere _sphere, string _name)
@@ -29,7 +31,7 @@ public class QuadTree
 		widthDir = _widthDir;
 		heightDir = _heightDir;
 		sphere = _sphere;
-		rootNode = new Node (null, 0, this, startPosition);
+		rootNode = new Node (null, 0, this, startPosition, name + "RootNode");
 //		plane = new Plane(Vector3.Cross(widthDir, heightDir), startPosition);
 		plane = new Plane(Vector3.Cross(heightDir, widthDir), startPosition);
 //		plane = new Plane(Vector3.Cross(heightDir, widthDir), radius);
@@ -38,13 +40,14 @@ public class QuadTree
 
 	public void Draw ()
 	{
-		Matrix4x4 t = sphere.transform.worldToLocalMatrix;
-		Ray cameraRay = new Ray(Vector3.zero, t.MultiplyPoint(sphere.camera.transform.position));
+		localMatrix = sphere.transform.worldToLocalMatrix;
+		Ray cameraRay = new Ray(Vector3.zero, localMatrix.MultiplyPoint(sphere.camera.transform.position));
 		float distance = 0;
 		containsCamera = plane.Raycast(cameraRay, out distance);
-		if(containsCamera && distance >= 0){
+//		if(containsCamera && distance >= 0){
+		if(containsCamera){
 			cameraPoint = Vector3.Normalize(sphere.camera.transform.position) * distance;
-//			Debug.Log(name + " had an intersection at: " + cameraPoint.ToString() + " : " + distance);
+//			if(this.name == "Front")Debug.Log(name + " had an intersection at: " + cameraPoint.ToString() + " : " + distance);
 		}
 		rootNode.Draw ();
 	}
