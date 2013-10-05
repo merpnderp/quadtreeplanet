@@ -64,8 +64,8 @@ public class QuadTreeSphere : MonoBehaviour
 	public GameObject GetPrefab(){
 		GameObject gm = Instantiate(PlanetMeshPrefab) as GameObject;
 		gm.transform.parent = (Transform)GetComponent("Transform");
-		gm.transform.localRotation = Quaternion.identity;
-		gm.transform.localPosition = new Vector3();
+//		gm.transform.localRotation = Quaternion.identity;
+//		gm.transform.localPosition = new Vector3();
 		return gm;
 	}	
 	

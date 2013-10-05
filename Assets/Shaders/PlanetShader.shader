@@ -4,6 +4,7 @@
 		WidthDir ("WidthDir", Vector) = (1,0,0,0)
 		HeightDir ("HeightDir", Vector) = (0,1,0,0)
 		Width ("Width", Float) = 1
+		Radius ("Radius", Float) = 1
 		c ("debug", Float) = 1
 	}
 	SubShader {
@@ -19,6 +20,7 @@
 			uniform float4 WidthDir;
 			uniform float4 HeightDir;
 			uniform float Width;
+			uniform float Radius;
 			uniform float c;
 			
 			struct v2f{
@@ -30,13 +32,14 @@
 			v2f vert(appdata_base v){
 				v2f o;
 			
-				o.m = v.vertex.x * v.vertex.y + .15;
+				o.m = v.vertex.x * v.vertex.y + .55;
+//				o.m = 1;
 					
 				//Square
-				v.vertex = float4((Position.xyz + ( (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width)).xyz, 1);
+//				v.vertex = float4((Position.xyz + ( (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width)).xyz, 1);
 				
 				//Circle
-//				v.vertex = float4(normalize(Position.xyz + (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width) * Width, 1);
+				v.vertex = float4(normalize(Position.xyz + (WidthDir.xyz * v.vertex.x + HeightDir.xyz * v.vertex.y) * Width) * Radius, 1);
 				
 				o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
 				

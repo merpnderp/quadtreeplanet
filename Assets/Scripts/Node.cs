@@ -42,9 +42,10 @@ public class Node
 	
 	public void Draw ()
 	{
-		if (level == 0 || (ShouldSplit () && level < 4)) {
+		if (level == 0 || (ShouldSplit () && level < 6)) {
 			if (isDrawn) {
-				GameObject.Destroy (prefab);
+				UnityEngine.Object.Destroy (prefab);
+				isDrawn = false;
 			}
 			if (! isSplit) {
 				Split ();
@@ -54,13 +55,14 @@ public class Node
 			bottomLeftChild.Draw ();
 			bottomRightChild.Draw ();
 			
-		} else if (! isDrawn) {
+		} else if (! isDrawn && ! isSplit) {
 			prefab = tree.sphere.GetPrefab ();
 			MeshRenderer mr = (MeshRenderer)prefab.GetComponent ("MeshRenderer");
 			mr.renderer.material.SetVector ("HeightDir", tree.heightDir);
 			mr.renderer.material.SetVector ("WidthDir", tree.widthDir);
 			mr.renderer.material.SetVector ("Position", position);
 			mr.renderer.material.SetFloat ("Width", width);
+			mr.renderer.material.SetFloat ("Radius", tree.sphere.radius);
 			mr.renderer.material.SetFloat ("c", c);	
 			MeshFilter mf = (MeshFilter)prefab.GetComponent ("MeshFilter");
 			mf.mesh = tree.sphere.meshProvider.GetStandardMesh ();
@@ -75,7 +77,7 @@ public class Node
 		if (ContainsCamera ()) {
 			float sd = (tree.sphere.splitDistance / (level + 1)) - tree.sphere.radius;
 			float td = Vector3.Distance (tree.localMatrix.MultiplyPoint (tree.sphere.camera.transform.position), position + (tree.widthDir + tree.heightDir) * halfWidth);
-			Debug.Log(sd + " : " + td);
+			Debug.Log (sd + " : " + td);
 			if (td < sd) {
 				return true;	
 			}
@@ -86,9 +88,8 @@ public class Node
 	private bool ContainsCamera ()
 	{
 		if (tree.containsCamera) {
-//			Debug.Log (tree.name + " : " + level + " " + name + " contained the camera: " + width + " : " + position + " : " + tree.cameraPoint);
-			if(InThisAxis(tree.cameraPoint, position, tree.heightDir, width)){
-				if(InThisAxis(tree.cameraPoint, position, tree.widthDir, width)){
+			if (InThisAxis (tree.cameraPoint, position, tree.heightDir, width)) {
+				if (InThisAxis (tree.cameraPoint, position, tree.widthDir, width)) {
 					return true;
 				}	
 			}
@@ -96,22 +97,23 @@ public class Node
 		return false;
 	}
 	
-	private bool InThisAxis(Vector3 c, Vector3 p, Vector3 axis, float w){
+	private bool InThisAxis (Vector3 c, Vector3 p, Vector3 axis, float w)
+	{
 		bool i = false;
-		if(axis.x == -1){
-			i = (p.x > c.x && c.x > p.x + (w * Mathf.Sign(axis.x)));
-		}else if(axis.x == 1){
-			i = (p.x < c.x && c.x < p.x + (w * Mathf.Sign(axis.x)));
+		if (axis.x == -1) {
+			i = (p.x > c.x && c.x > p.x + (w * Mathf.Sign (axis.x)));
+		} else if (axis.x == 1) {
+			i = (p.x < c.x && c.x < p.x + (w * Mathf.Sign (axis.x)));
 			
-		}else if(axis.y == -1){
-			i = (p.y > c.y && c.y > p.y + (w * Mathf.Sign(axis.y)));
-		}else if(axis.y == 1){
-			i = (p.y < c.y && c.y < p.y + (w * Mathf.Sign(axis.y)));
+		} else if (axis.y == -1) {
+			i = (p.y > c.y && c.y > p.y + (w * Mathf.Sign (axis.y)));
+		} else if (axis.y == 1) {
+			i = (p.y < c.y && c.y < p.y + (w * Mathf.Sign (axis.y)));
 			
-		}else if(axis.z == -1){
-			i = (p.z > c.z && c.z > p.z + (w * Mathf.Sign(axis.z)));
-		}else{
-			i = (p.z < c.z && c.z < p.z + (w * Mathf.Sign(axis.z)));
+		} else if (axis.z == -1) {
+			i = (p.z > c.z && c.z > p.z + (w * Mathf.Sign (axis.z)));
+		} else {
+			i = (p.z < c.z && c.z < p.z + (w * Mathf.Sign (axis.z)));
 		}
 //		Debug.Log(i);
 		return i;
