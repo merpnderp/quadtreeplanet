@@ -42,7 +42,7 @@ public class Node
 	
 	public void Draw ()
 	{
-		if (level == 0 || (ShouldSplit () && level < 6)) {
+		if (level == 0 || (ShouldSplit () && level < 20)) {
 			if (isDrawn) {
 				UnityEngine.Object.Destroy (prefab);
 				isDrawn = false;
@@ -57,6 +57,7 @@ public class Node
 			
 		} else if (! isDrawn && ! isSplit) {
 			prefab = tree.sphere.GetPrefab ();
+			
 			MeshRenderer mr = (MeshRenderer)prefab.GetComponent ("MeshRenderer");
 			mr.renderer.material.SetVector ("HeightDir", tree.heightDir);
 			mr.renderer.material.SetVector ("WidthDir", tree.widthDir);
@@ -64,9 +65,7 @@ public class Node
 			mr.renderer.material.SetFloat ("Width", width);
 			mr.renderer.material.SetFloat ("Radius", tree.sphere.radius);
 			mr.renderer.material.SetFloat ("c", c);	
-			MeshFilter mf = (MeshFilter)prefab.GetComponent ("MeshFilter");
-			mf.mesh = tree.sphere.meshProvider.GetStandardMesh ();
-			mf.mesh.RecalculateBounds ();	
+
 			isDrawn = true;
 			Debug.Log (name + " : " + tree.widthDir + " : " + tree.heightDir + " : " + position);
 		}
@@ -76,13 +75,17 @@ public class Node
 	{
 		if (ContainsCamera ()) {
 			float sd = (tree.sphere.splitDistance / (level + 1)) - tree.sphere.radius;
-			float td = Vector3.Distance (tree.localMatrix.MultiplyPoint (tree.sphere.camera.transform.position), position + (tree.widthDir + tree.heightDir) * halfWidth);
-			Debug.Log (sd + " : " + td);
+			float td = Vector3.Distance (tree.localMatrix.MultiplyPoint (tree.sphere.playerObject.transform.position), position + (tree.widthDir + tree.heightDir) * halfWidth);
 			if (td < sd) {
 				return true;	
 			}
 		}
 		return false;
+	}
+	
+	private bool IsOccluded(){
+		
+		return true;	
 	}
 	
 	private bool ContainsCamera ()
@@ -115,7 +118,6 @@ public class Node
 		} else {
 			i = (p.z < c.z && c.z < p.z + (w * Mathf.Sign (axis.z)));
 		}
-//		Debug.Log(i);
 		return i;
 	}
 	

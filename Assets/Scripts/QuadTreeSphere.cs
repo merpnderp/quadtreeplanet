@@ -12,12 +12,12 @@ public class QuadTreeSphere : MonoBehaviour
 	public int maxLevel;
 	public int splitDistance = 500;
 	
-	public GameObject camera;	
+	public GameObject playerObject;
+	public Camera camera;
 	public Vector3 oldCameraPosition;
 	
 	public GameObject PlanetMeshPrefab;
 	
-	private List<GameObject> PlanetMeshPrefabs = new List<GameObject>();
 	private List<QuadTree> quadTrees = new List<QuadTree> ();
 	
 	public MeshProvider meshProvider;
@@ -31,6 +31,10 @@ public class QuadTreeSphere : MonoBehaviour
 	public void init(){
 		
 		meshProvider = new MeshProvider(patchSize);
+		MeshFilter mf = (MeshFilter)PlanetMeshPrefab.GetComponent ("MeshFilter");
+		mf.sharedMesh = meshProvider.GetStandardMesh ();
+		mf.sharedMesh.RecalculateBounds ();	
+		
 		maxLevel = (int)Mathf.Log (radius * 2f);
 		maxLevel -= (int)Mathf.Log (Mathf.Pow (patchSize, 2));
 		maxLevel = maxLevel < 0 ? 0 : maxLevel;
@@ -53,17 +57,20 @@ public class QuadTreeSphere : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update (){
-		if(camera.transform.position != oldCameraPosition){
-			oldCameraPosition = camera.transform.position;
+//		if(playerObject.transform.position != oldCameraPosition){
+			oldCameraPosition = playerObject.transform.position;
 			foreach(QuadTree tree in quadTrees){
 				tree.Draw();
 			}
-		}
+//		}
 	}
 
 	public GameObject GetPrefab(){
 		GameObject gm = Instantiate(PlanetMeshPrefab) as GameObject;
 		gm.transform.parent = (Transform)GetComponent("Transform");
+//		MeshFilter mf = (MeshFilter)gm.GetComponent ("MeshFilter");
+//		mf.sharedMesh = meshProvider.GetStandardMesh ();
+//		mf.sharedMesh.RecalculateBounds ();	
 //		gm.transform.localRotation = Quaternion.identity;
 //		gm.transform.localPosition = new Vector3();
 		return gm;
